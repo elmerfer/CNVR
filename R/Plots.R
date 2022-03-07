@@ -76,7 +76,7 @@ GetAllExons <- function(cnvCalls, countThreshold =10){
   # linf <- loess(li ~x, puntos, span = 0.3)
   # df.l<- data.frame(x=puntos$x,y=lsup$fitted)
   # df.li<- data.frame(x=puntos$x,y=linf$fitted)
-  p <- ggplot(puntos, aes(x,y,colour=colscale)) + geom_point() + scale_color_gradient2(midpoint = 1, low = "red", high = "blue") + 
+  p <- ggplot(puntos, aes(x,y,colour=colscale)) + geom_point(size=0.5) + scale_color_gradient2(midpoint = 1, low = "red", high = "blue") + 
     geom_smooth(method="loess",span=0.1, se=F,col="black", size=0.5,linetype = "dashed") + 
     geom_smooth(data = puntos,  method="loess",span=0.1, se=F, aes(x=x,y=ls),col="aquamarine4", size=0.5,linetype = "dashed") +
     geom_smooth(data = puntos,  method="loess",span=0.1, se=F, aes(x,y=li),col="aquamarine4", size=0.5,linetype = "dashed")# +
@@ -95,7 +95,7 @@ GetAllExons <- function(cnvCalls, countThreshold =10){
     genes <- subset(geneTable, chromosome == chr)
     if(nrow(genes)>0){
       exons <- plyr::ldply(genes$Gene,function(x){
-        ret <- subset(CHRi$Exons, stringr::str_detect(name, paste0("^",x,"_")))
+        ret <- subset(annot, stringr::str_detect(name, paste0("^",x,"_")))
         ret$gene <- x
         ret
       })
@@ -106,7 +106,7 @@ GetAllExons <- function(cnvCalls, countThreshold =10){
     }
     
   }
-  p <- p + labs(title = paste0("Chr ",unique(annot$chromosome)),x="base posotion",y="Ratio") + theme(legend.position = "none")
+  p <- p + labs(title = paste0("Chr ",unique(annot$chromosome)),x="base position",y="Ratio") + theme(legend.position = "none")
   # print(p)
   
   return(invisible(p))
