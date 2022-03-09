@@ -4,24 +4,16 @@
 \alias{AddNewReference}
 \title{AddNewReference}
 \usage{
-AddNewReference(
-  db,
-  sbjsBamFiles,
-  genomeDBversion = NULL,
-  exonsBed = NULL,
-  save = TRUE
-)
+AddNewReference(db, sbjsBamFiles, exonsBed = NULL, saveTo = NULL)
 }
 \arguments{
 \item{db}{exon counts database}
 
 \item{sbjsBamFiles}{path to wubjects}
 
-\item{genomeDBversion}{genome version see \code{\link[GenomeDB]{GetGenome}}}
-
 \item{exonsBed}{it is required that the first three columns should be chromosome, start and end}
 
-\item{save}{TRUE if you whant to save the Database}
+\item{save}{TRUE if you want to save the Database}
 }
 \description{
 AddNewReference

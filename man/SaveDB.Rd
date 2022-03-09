@@ -2,7 +2,14 @@
 % Please edit documentation in R/CNVR.utils.R
 \name{SaveDB}
 \alias{SaveDB}
-\title{SaveDB}
+\title{SaveDB
+It saves the reference data base of exon counts for CNV detection
+It should hold the following slots:
+DB : (data.matrix) the exon counts data matrix of the reference subjects (ExS)
+exons : (data.frame) annotation information chromosome, start, end , strand , ...
+path : (character) full path where the library is saved
+GenomeDBversion : the genome DB version (see \code{\link[GenomeDB]{GetGenome}}) (all the samples should be processed by the same GenomeDBversion)
+Aligner : the used aligner (all the samples should be processed by the same Aligner)}
 \usage{
 SaveDB(db)
 }
@@ -11,4 +18,11 @@ SaveDB(db)
 }
 \description{
 SaveDB
+It saves the reference data base of exon counts for CNV detection
+It should hold the following slots:
+DB : (data.matrix) the exon counts data matrix of the reference subjects (ExS)
+exons : (data.frame) annotation information chromosome, start, end , strand , ...
+path : (character) full path where the library is saved
+GenomeDBversion : the genome DB version (see \code{\link[GenomeDB]{GetGenome}}) (all the samples should be processed by the same GenomeDBversion)
+Aligner : the used aligner (all the samples should be processed by the same Aligner)
 }

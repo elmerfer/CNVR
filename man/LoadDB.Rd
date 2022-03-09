@@ -7,13 +7,16 @@
 LoadDB(path)
 }
 \arguments{
-\item{path}{a path direcotry to the DB}
+\item{path}{a path directory to the DB}
 }
 \value{
 an object of class CNVRdb, derived from a list with the following slots
-DB : a data.table with chromosome star end name subject1 subject2 .....
-path : path
-GenomeDBversion
+It should hold the following slots:
+DB : (data.matrix) the exon counts data matrix of the reference subjects (ExS)
+exons : (data.frame) annotation information chromosome, start, end , strand , ...
+path : (character) full path where the library is saved
+GenomeDBversion : the genome DB version (see \code{\link[GenomeDB]{GetGenome}}) (all the samples should be processed by the same GenomeDBversion)
+Aligner : the used aligner (all the samples should be processed by the same Aligner)
 }
 \description{
 LoadDB
