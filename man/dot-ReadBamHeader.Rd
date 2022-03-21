@@ -12,7 +12,7 @@
 \value{
 a list with the following slots:
 CHR: the list of chromosomes and sequence names in the bam file
-ProgramName : the aligment program (PG:PN see [BAM header](https://samtools.github.io/hts-specs/SAMv1.pdf))
+ProgramName : the alignment program (PG:PN see [BAM header](https://samtools.github.io/hts-specs/SAMv1.pdf))
 ProgramVersion : the version of the aligner
 Code : executed source line code
 GenomeDBversion : the genome version used (see GenomeDB)

@@ -2,7 +2,7 @@
 ##' @param bamFile bam file full path
 ##' @return a list with the following slots:
 ##' CHR: the list of chromosomes and sequence names in the bam file
-##' ProgramName : the aligment program (PG:PN see [BAM header](https://samtools.github.io/hts-specs/SAMv1.pdf))
+##' ProgramName : the alignment program (PG:PN see [BAM header](https://samtools.github.io/hts-specs/SAMv1.pdf))
 ##' ProgramVersion : the version of the aligner
 ##' Code : executed source line code
 ##' GenomeDBversion : the genome version used (see GenomeDB)
@@ -21,3 +21,14 @@
   return(list(CHR=bam.chrs,ProgramName = pname, ProgramVersion=pversion, Code =CL, GenomeDBversion=genome, GenomeDBpath = gpath))
 }
 
+##'.FormatGenedodeColumn
+##'internal function to format the output of CNVcalls 
+##'@param genecode the column of the CNVcall object
+.FormatGenedodeColumn <- function(genecode){
+  unlist(lapply(genecode, 
+                   function(x){
+                     genes <- as.character(unique(lapply(unlist(stringr::str_split(x,",")),function(xv){unlist(stringr::str_split(xv,"_"))[1]})))
+                     data.frame(genes=paste0(genes,collapse = "|"))
+                   }
+  ))
+}
