@@ -79,7 +79,8 @@ GetAllExons <- function(cnvCalls, countThreshold =10){
   p <- ggplot(puntos, aes(x,y,colour=colscale)) + geom_point(size=0.5) + scale_color_gradient2(midpoint = 1, low = "red", high = "blue") + 
     geom_smooth(method="loess",span=0.1, se=F,col="black", size=0.5,linetype = "dashed") + 
     geom_smooth(data = puntos,  method="loess",span=0.1, se=F, aes(x=x,y=ls),col="aquamarine4", size=0.5,linetype = "dashed") +
-    geom_smooth(data = puntos,  method="loess",span=0.1, se=F, aes(x,y=li),col="aquamarine4", size=0.5,linetype = "dashed")# +
+    geom_smooth(data = puntos,  method="loess",span=0.1, se=F, aes(x,y=li),col="aquamarine4", size=0.5,linetype = "dashed") +
+    theme(axis.text.x = element_text(angle=45, vjust=.5, hjust=1, size=0.5)) + ylim(-.1,3.5) + geom_hline(yintercept = 1)
   
   # geom_vline(xintercept = chrom.bed[chr,"mid.point"], linetype = "dashed" ) + xlab("Chr. position") + ylab("log ratio")
   if(nrow(CNVs)>0){
@@ -100,13 +101,15 @@ GetAllExons <- function(cnvCalls, countThreshold =10){
         ret
       })
       require(dplyr)
-      labels <- exons %>% group_by(gene) %>% summarise(x=min(middle),y=min(ratio))
+      require(ggrepel)
+      labels <- exons %>% group_by(gene) %>% summarise(x=min(middle),y=max(ratio))
       p <- p + geom_point(data=exons, mapping=aes(x=middle,y=ratio, shape=gene), colour = "black") + 
-        geom_text(data=as.data.frame(labels), aes(x,y, label=gene),angle=45,colour="black")
+        geom_text_repel(data=as.data.frame(labels), aes(x,y, label=gene, size=0.6),hjust=0, vjust=0,angle=90,colour="black")
     }
     
   }
-  p <- p + labs(title = paste0("Chr ",unique(annot$chromosome)),x="base position",y="Ratio") + theme(legend.position = "none")
+  p <- p + labs(title = paste0("Chr ",unique(annot$chromosome)),x="base position",y="Ratio") + 
+    theme(legend.position = "none",plot.title = element_text(margin = margin(t=40,b=-30)))
   # print(p)
   
   return(invisible(p))

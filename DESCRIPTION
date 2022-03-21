@@ -16,7 +16,8 @@ Imports:
     parallel,
     data.table,
     ExomeDepth,
-    plyr
+    plyr,
+    ggrepel
 Suggests: 
     knitr, 
     rmarkdown
