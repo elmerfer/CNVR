@@ -65,6 +65,7 @@ SaveDB <- function(db){
 }
 
 #' AddNewReference
+#' This function will create or increase the Exon counts data base.
 #' @param db exon counts database 
 #' @param sbjsBamFiles path to wubjects
 #' @param exonsBed it is required that the first three columns should be chromosome, start and end
@@ -75,9 +76,13 @@ AddNewReference <- function(db, sbjsBamFiles, exonsBed= NULL, saveTo=NULL){
     if(is.null(exonsBed)){
       stop("exons gtf annotation should be provided as a data.table")
     }
+    ##lee la información de alineamiento desde el BAM. La almacena en la base de datos para 
+    ##tener en cuenta que deben utilizarse el mismo alineador
+    ##si la base de datos no existe,m, le asigna la del primer sujeto
     hd <- .ReadBamHeader(sbjsBamFiles[1])
     db$GenomeDBversion <- hd$GenomeDBversion
     db$Aligner <- hd$Aligner
+    
     db$exons <- exonsBed
   }else{## la base de datos existe
     exonsBed <- db$exons
@@ -126,13 +131,13 @@ AddNewReference <- function(db, sbjsBamFiles, exonsBed= NULL, saveTo=NULL){
     counts <- counts[[1]]
   }
   
-  if(is.null(db$DB)){
+  if(is.null(db$DB)){#si la DB no existe, la crea
     db$DB <- counts[,-c(1:4)]
     db$GenomeDBversion <- df.info$GenomeDBversion[1]
     db$Aligner <- df.info$Aligner[1]
     class(db) <- c("CNVRdb",class(db))
     
-  }else{
+  }else{##si existe agrega el sujeto
     db$DB <- cbind(db$DB,counts[,-c(1:4)])
   }
   
@@ -151,6 +156,9 @@ AddNewReference <- function(db, sbjsBamFiles, exonsBed= NULL, saveTo=NULL){
 }
 
 #' CNVcall  
+#' This function execute the CNV call based on ExomeDepth. 
+#' It assumes that the Subject is not present on the current Exon Count DB.
+#' If the subjects is already in the DB, it will stop.
 #' @param db exon counts database
 #' @param sbjsBamFiles subject BAM files
 #' @param reference the reference type 
@@ -186,6 +194,8 @@ CNVcall <- function(db, sbjsBamFiles, reference = c("auto","all")){
      if(bh$ProgramName == "subread"){
        db$exons$chromosome <- stringr::str_remove_all(db$exons$chromosome,"chr")
      }
+     Genome <- ifelse(stringr::str_detect(bh$GenomeDBversion,"GRCh38"),"GRCh38","hg19")
+     
     cts <- getBamCounts(bed.frame = db$exons,
                         bam.files = sbj, 
                         include.chr = F, ##assuming that it comes from Aligner (RSubread)
@@ -233,9 +243,10 @@ CNVcall <- function(db, sbjsBamFiles, reference = c("auto","all")){
     all.exons@annotations$type[!c(all.exons@annotations$freq > 0)] <- NA
     all.exons@annotations$type[!c(all.exons@annotations$ratio > 0)] <- NA
     all.exons@annotations$counts.weighted <- (all.exons@test + all.exons@reference) * all.exons@expected
+    #cuidado aqui, que siempre sea GRCh38
     
     all.exons@CNV.calls$loc <- unlist(lapply(unique(all.exons@CNV.calls$chromosome),function(x){
-      ctr <- Centromere$GRCh38$left[Centromere$GRCh38$chr==x]
+      ctr <- Centromere[[Genome]]$left[Centromere[[Genome]]$chr==x]
       loc <- unlist(lapply(all.exons@CNV.calls$end[all.exons@CNV.calls$chromosome==x], function(xx){
         ifelse(xx<ctr,"p","q")
       }))

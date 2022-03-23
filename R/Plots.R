@@ -5,7 +5,7 @@
 
 # anno <- x@annotations
 #' GetCNVsAnnotation
-#' internal function
+#' 
 #' @param chr (chromosome) any of chr1..chr22
 #' @param x a CNV object from ExonDepth
 #' @param countThreshold (default = 10). The minimum expected exon count

@@ -2,7 +2,8 @@
 % Please edit documentation in R/CNVR.utils.R
 \name{CNVcall}
 \alias{CNVcall}
-\title{CNVcall}
+\title{CNVcall  
+This function execute the CNV call based on ExomeDepth}
 \usage{
 CNVcall(db, sbjsBamFiles, reference = c("auto", "all"))
 }
@@ -14,5 +15,6 @@ CNVcall(db, sbjsBamFiles, reference = c("auto", "all"))
 \item{reference}{the reference type}
 }
 \description{
-CNVcall
+CNVcall  
+This function execute the CNV call based on ExomeDepth
 }

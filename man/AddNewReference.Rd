@@ -2,7 +2,8 @@
 % Please edit documentation in R/CNVR.utils.R
 \name{AddNewReference}
 \alias{AddNewReference}
-\title{AddNewReference}
+\title{AddNewReference
+This function will create or increase the Exon counts data base.}
 \usage{
 AddNewReference(db, sbjsBamFiles, exonsBed = NULL, saveTo = NULL)
 }
@@ -17,4 +18,5 @@ AddNewReference(db, sbjsBamFiles, exonsBed = NULL, saveTo = NULL)
 }
 \description{
 AddNewReference
+This function will create or increase the Exon counts data base.
 }
