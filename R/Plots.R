@@ -41,8 +41,9 @@ GetCNVsAnnotation <- function(chr, x, countThreshold =10){
   
   anno$my.min.norm.prop <- anno$my.min.norm/anno$total.counts
   anno$my.max.norm.prop <- anno$my.max.norm/anno$total.counts
-  
-  return(list(Exons=anno, CNVs=subset(x@CNV.calls, chromosome == chr)))
+  CNVsret <- subset(x@CNV.calls, chromosome == chr)
+  attr(CNVsret,"BamHeader") <- attr(x@CNV.calls,"BamHeader")
+  return(list(Exons=anno, CNVs=CNVsret))
 }
 
 GetAllExons <- function(cnvCalls, countThreshold =10){
@@ -57,6 +58,10 @@ GetAllExons <- function(cnvCalls, countThreshold =10){
   # annot <- chr19
   # thLength <- 500
   # annot <- CHRi
+  
+  bh <- attr(annot$CNVs,"BamHeader")
+  data(Centromere)
+  Genome <- ifelse(stringr::str_detect(bh$GenomeDBversion,"GRCh38"),"GRCh38","hg19")
   CNVs <- annot$CNVs
   CNVs$width <- (CNVs$end-CNVs$start)
   chr <- stringr::str_replace_all(annot$Exons$chromosome[1],"chr","Chr")
@@ -76,11 +81,26 @@ GetAllExons <- function(cnvCalls, countThreshold =10){
   # linf <- loess(li ~x, puntos, span = 0.3)
   # df.l<- data.frame(x=puntos$x,y=lsup$fitted)
   # df.li<- data.frame(x=puntos$x,y=linf$fitted)
-  p <- ggplot(puntos, aes(x,y,colour=colscale)) + geom_point(size=0.5) + scale_color_gradient2(midpoint = 1, low = "red", high = "blue") + 
-    geom_smooth(method="loess",span=0.1, se=F,col="black", size=0.5,linetype = "dashed") + 
-    geom_smooth(data = puntos,  method="loess",span=0.1, se=F, aes(x=x,y=ls),col="aquamarine4", size=0.5,linetype = "dashed") +
-    geom_smooth(data = puntos,  method="loess",span=0.1, se=F, aes(x,y=li),col="aquamarine4", size=0.5,linetype = "dashed") +
-    theme(axis.text.x = element_text(angle=45, vjust=.5, hjust=1, size=0.5)) + ylim(-.1,3.5) + geom_hline(yintercept = 1)
+  chr <- unique(annot$chromosome)
+  lp <- loess(y~x,subset(puntos,x < Centromere[[Genome]][Centromere[[Genome]]$chr==chr,]$left), span = 0.5)
+  
+  lq <- loess(y~x,subset(puntos,x > Centromere[[Genome]][Centromere[[Genome]]$chr==chr,]$left), span = 0.5)
+  
+   p <- ggplot(puntos, aes(x,y,colour=colscale)) + geom_point(size=0.5) + 
+     scale_color_stepsn(colours = c("red", "white",  "blue"),breaks = c(  0.9, 1.1 ) )+
+    geom_line(aes(x=x,y=y),data=data.frame(x=lp$x,y=lp$fitted),colour="red")+
+    geom_line(aes(x=x,y=y),data=data.frame(x=lq$x,y=lq$fitted),colour="red")+
+    theme(axis.text.x = element_text(angle=45, vjust=.5, hjust=1, size=0.5)) + 
+    ylim(-.1,3.5) + geom_line(aes(x=x,y=y),data=data.frame(x=lp$x,y=lp$fitted),colour="red")+
+    geom_line(aes(x=x,y=y),data=data.frame(x=lq$x,y=lq$fitted),colour="red")+
+    geom_hline(yintercept = 1)
+  
+  # p <- ggplot(puntos, aes(x,y,colour=colscale)) + geom_point(size=0.5) + 
+  #   scale_color_stepsn(colours = c("red", "white",  "blue"),breaks = c(  0.9, 1.1 ) ) + 
+  #   geom_smooth(method="loess",span=0.1, se=F,col="black", size=0.5,linetype = "dashed") + 
+  #   # geom_smooth(data = puntos,  method="loess",span=0.1, se=F, aes(x=x,y=ls),col="aquamarine4", size=0.5,linetype = "dashed") +
+    # geom_smooth(data = puntos,  method="loess",span=0.1, se=F, aes(x,y=li),col="aquamarine4", size=0.5,linetype = "dashed") +
+    # theme(axis.text.x = element_text(angle=45, vjust=.5, hjust=1, size=0.5)) + ylim(-.1,3.5) + geom_hline(yintercept = 1)
   
   # geom_vline(xintercept = chrom.bed[chr,"mid.point"], linetype = "dashed" ) + xlab("Chr. position") + ylab("log ratio")
   if(nrow(CNVs)>0){
@@ -104,7 +124,7 @@ GetAllExons <- function(cnvCalls, countThreshold =10){
       require(ggrepel)
       labels <- exons %>% group_by(gene) %>% summarise(x=min(middle),y=max(ratio))
       p <- p + geom_point(data=exons, mapping=aes(x=middle,y=ratio, shape=gene), colour = "black") + 
-        geom_text_repel(data=as.data.frame(labels), aes(x,y, label=gene, size=0.6),hjust=0, vjust=0,angle=90,colour="black")
+        geom_text_repel(data=as.data.frame(labels), aes(x,y=3, label=gene, size=0.6),hjust=0, vjust=0,angle=90,colour="black")
     }
     
   }

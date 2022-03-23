@@ -243,6 +243,7 @@ CNVcall <- function(db, sbjsBamFiles, reference = c("auto","all")){
     }))
     all.exons@CNV.calls$size <- all.exons@CNV.calls$end - all.exons@CNV.calls$start
     all.exons@CNV.calls$Genes <- .FormatGenedodeColumn(all.exons@CNV.calls$genecode)
+    attr(all.exons@CNV.calls,"BamHeader") <- bh
       return(all.exons)
     },BPPARAM = MulticoreParam(workers = length(sbjsBamFiles)))
 
