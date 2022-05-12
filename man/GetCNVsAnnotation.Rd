@@ -2,8 +2,7 @@
 % Please edit documentation in R/Plots.R
 \name{GetCNVsAnnotation}
 \alias{GetCNVsAnnotation}
-\title{GetCNVsAnnotation
-internal function}
+\title{GetCNVsAnnotation}
 \usage{
 GetCNVsAnnotation(chr, x, countThreshold = 10)
 }
@@ -19,5 +18,4 @@ an annotation data frame for the specified chromosome to be used for plotting
 }
 \description{
 GetCNVsAnnotation
-internal function
 }

@@ -82,7 +82,12 @@ GetAllExons <- function(cnvCalls, countThreshold =10){
   # df.l<- data.frame(x=puntos$x,y=lsup$fitted)
   # df.li<- data.frame(x=puntos$x,y=linf$fitted)
   chr <- unique(annot$chromosome)
-  lp <- loess(y~x,subset(puntos,x < Centromere[[Genome]][Centromere[[Genome]]$chr==chr,]$left), span = 0.5)
+  if(nrow(subset(puntos,x < Centromere[[Genome]][Centromere[[Genome]]$chr==chr,]$left))>0){
+    lp <- loess(y~x,subset(puntos,x < Centromere[[Genome]][Centromere[[Genome]]$chr==chr,]$left), span = 0.5)  
+  }else{
+    lp<-data.frame(x=puntos$x[1],y=puntos$y[1],fitted=puntos$x[1])
+  }
+  
   
   lq <- loess(y~x,subset(puntos,x > Centromere[[Genome]][Centromere[[Genome]]$chr==chr,]$left), span = 0.5)
   

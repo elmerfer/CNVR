@@ -3,7 +3,9 @@
 \name{CNVcall}
 \alias{CNVcall}
 \title{CNVcall  
-This function execute the CNV call based on ExomeDepth}
+This function execute the CNV call based on ExomeDepth. 
+It assumes that the Subject is not present on the current Exon Count DB.
+If the subjects is already in the DB, it will stop.}
 \usage{
 CNVcall(db, sbjsBamFiles, reference = c("auto", "all"))
 }
@@ -16,5 +18,7 @@ CNVcall(db, sbjsBamFiles, reference = c("auto", "all"))
 }
 \description{
 CNVcall  
-This function execute the CNV call based on ExomeDepth
+This function execute the CNV call based on ExomeDepth. 
+It assumes that the Subject is not present on the current Exon Count DB.
+If the subjects is already in the DB, it will stop.
 }

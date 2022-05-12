@@ -4,19 +4,26 @@ geneTable$chromosome <- stringr::str_remove_all(geneTable$chromosome,"[a-z]")
 View(geneTable)
 
 pls <- bplapply(1:22, function(xc){
-  # print(xc)
-  # xc<-9
-  obj <- GetCNVsAnnotation(chr = xc  , x=CallsBP[[1]])
+  print(xc)
+   
+  obj <- GetCNVsAnnotation(chr = xc  , x=sbj[[1]])
+  # attr(obj$CNVs,"BamHeader")
   pp<-CNVR:::.PlotCNVchromosome(obj, geneTable = geneTable)
 } , BPPARAM = bpparam())
+
+
 library(ggpubr)
-# pdf(file="27040.pdf",paper="a4r",height = 14,width = 14)
+
+#pdf(file="27040.pdf",paper="a4r",height = 14,width = 14)
 ggarrange(plotlist = pls, nrow=4, ncol=6)
 # dev.off()
 
-obj <- GetCNVsAnnotation(chr = 19  , x=CallsBP[[1]])
+obj <- GetCNVsAnnotation(chr = 10  , x=CallsBP[[1]])
 pp<-CNVR:::.PlotCNVchromosome(obj, geneTable = geneTable)
 pp
+
+
+
 foo <- function(genecode){
   unlist(lapply(genecode, function(gline){
     df <- ldply(unlist(stringr::str_split(gline,",")),function(x) unlist(stringr::str_split(x,"_")))

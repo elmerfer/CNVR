@@ -10,11 +10,11 @@ AddNewReference(db, sbjsBamFiles, exonsBed = NULL, saveTo = NULL)
 \arguments{
 \item{db}{exon counts database}
 
-\item{sbjsBamFiles}{path to wubjects}
+\item{sbjsBamFiles}{path to subjects}
 
 \item{exonsBed}{it is required that the first three columns should be chromosome, start and end}
 
-\item{save}{TRUE if you want to save the Database}
+\item{saveTo}{(character) default NULL. The path to save the database. It is only valid if the database do not exists}
 }
 \description{
 AddNewReference
