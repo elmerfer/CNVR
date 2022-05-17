@@ -7,9 +7,9 @@ library(plyr)
 .LIBRARY <- "TWIST" #"SSV6" #
 .DB.FULL.NAME <- paste0(.DB.FULL.NAME,.LIBRARY,".RDS")
 
-data("Centromere")
+
 db <- CNVR::LoadDB(.DB.FULL.NAME)
-colnames(db$DB)
+
 dir.path <- rstudioapi::selectDirectory(path = "/media/respaldo4t/FLENI/CNVs/ONCO/PACIENTES_T" )
 
 if(!is.null(dir.path)){

@@ -262,7 +262,7 @@ CNVcall <- function(db, sbjsBamFiles, reference = c("auto","all")){
     #cuidado aqui, que siempre sea GRCh38
     
     all.exons@CNV.calls$loc <- unlist(lapply(unique(all.exons@CNV.calls$chromosome),function(x){
-      ctr <- Centromere[[Genome]]$left[Centromere[[Genome]]$chr==x]
+      ctr <- CNVR::Centromere[[Genome]]$left[CNVR::Centromere[[Genome]]$chr==x]
       loc <- unlist(lapply(all.exons@CNV.calls$end[all.exons@CNV.calls$chromosome==x], function(xx){
         ifelse(xx<ctr,"p","q")
       }))
@@ -388,7 +388,7 @@ CNVcallFromDB <- function(db, dbSubjects, reference = c("auto","all")){
     #cuidado aqui, que siempre sea GRCh38
     
     all.exons@CNV.calls$loc <- unlist(lapply(unique(all.exons@CNV.calls$chromosome),function(x){
-      ctr <- Centromere[[Genome]]$left[Centromere[[Genome]]$chr==x]
+      ctr <- CNVR::Centromere[[Genome]]$left[CNVR::Centromere[[Genome]]$chr==x]
       loc <- unlist(lapply(all.exons@CNV.calls$end[all.exons@CNV.calls$chromosome==x], function(xx){
         ifelse(xx<ctr,"p","q")
       }))
@@ -425,8 +425,15 @@ CNVcallFromDB <- function(db, dbSubjects, reference = c("auto","all")){
 #' }
 CNVReport <- function(cnv,sbjPath){
   bh <- attr(cnv@CNV.calls, "BamHeader")
-  aligment.code <- stringr::str_split(bh$Code[stringr::str_detect(bh$Code,"_1.fastq|_R1.fastq|fq")]," ")
-  subject<- basename(unlist(aligment.code)[which(stringr::str_detect(unlist(aligment.code),"_1.fastq|_R1.fastq|fq"))[1]])
+  if(is.null(bh)){
+    aligment.code <- "UNKNOWN"
+    subject<- ""
+    warning("header information not found")
+  }else{
+    aligment.code <- stringr::str_split(bh$Code[stringr::str_detect(bh$Code,"_1.fastq|_R1.fastq|fq")]," ")
+    subject<- basename(unlist(aligment.code)[which(stringr::str_detect(unlist(aligment.code),"_1.fastq|_R1.fastq|fq"))[1]])
+  }
+  
   if(missing(sbjPath)){
     sbjPath <- paste0(subject,"_CNVs.xlsx")
   }else{
