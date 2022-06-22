@@ -1,16 +1,20 @@
 library(BiocParallel)
 library(ExomeDepth)
 library(plyr)
-# library(CNVR)
-
-.DB.FULL.NAME <- "/media/respaldo4t/FLENI/CNVs/ONCO/CNVDB/CNVDB.CLINICAL_MGEN_"
+library(CNVR)
+if(Sys.info()["user"]=="biomolecular"){
+   data.path <- "~/DATA/NGS/ONCO/"
+}else{
+   data.path <- "/media/respaldo4t/FLENI/CNVs/ONCO"
+}
+.DB.FULL.NAME <- file.path(data.path,"/CNVDB/CNVDB.CLINICAL_MGEN_")
 .LIBRARY <- "TWIST" #"SSV6" #
 .DB.FULL.NAME <- paste0(.DB.FULL.NAME,.LIBRARY,".RDS")
 
 
 db <- CNVR::LoadDB(.DB.FULL.NAME)
 
-dir.path <- rstudioapi::selectDirectory(path = "/media/respaldo4t/FLENI/CNVs/ONCO/PACIENTES_T" )
+dir.path <- rstudioapi::selectDirectory(path = file.path(data.path,"PACIENTES/" ))
 
 if(!is.null(dir.path)){
    bam.file <- list.files(dir.path,full.names = T)
@@ -27,7 +31,10 @@ if(!is.null(dir.path)){
    }
    cat(paste0("\nNow searching for CNVs on subject ",dirname(dir.path)))
     sbj <- CNVR::CNVcallFromDB(db, unlist(stringr::str_split(basename(bam.file),"_"))[1])
-    CNVReport(cnv = sbj[[1]], dir.path)
+    filexlsx <- CNVReport(cnv = sbj[[1]], dir.path)
+    cat("\n-------------------\n")
+    cat(paste0("\nFile created ....:", ifelse(is.null(filexlsx),"NOT CREATED", basename(filexlsx)),"\n"))
+    
 }else{
   cat("Not patient selected")
 }

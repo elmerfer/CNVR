@@ -100,7 +100,7 @@ AddNewReference <- function(db, sbjsBamFiles, exonsBed= NULL, saveTo=NULL){
   ## check for GenomeDB and Aligner of BAM files
   df.info <- plyr::ldply(sbjsBamFiles, function(bfile){
     hd <- .ReadBamHeader(bfile)
-    data.frame(GenomeDBversion=hd$GenomeDBversion, Aligner=hd$ProgramName[hd$ProgramName %in% c("bwa","subread","STAR")])
+    data.frame(GenomeDBversion=ifelse(is.null(hd$GenomeDBversion),"",hd$GenomeDBversion), Aligner=hd$ProgramName[hd$ProgramName %in% c("bwa","subread","STAR")])
   })
   rownames(df.info) <- basename(sbjsBamFiles)
   
@@ -441,5 +441,11 @@ CNVReport <- function(cnv,sbjPath){
   }
   cnorder <-c("chromosome","id","type","Genes","nexons","loc","size","BF","reads.ratio","reads.expected","reads.observed", "start.p","end.p","start","end","genecode")
   openxlsx::write.xlsx(list(CNV=cnv@CNV.calls[,cnorder],Code=aligment.code), sbjPath, overwrite = T)
+  if(file.exists(sbjPath)){
+    return(invisible(sbjPath))  
+  }else{
+    return(NULL)
+  }
+  
 }
 
