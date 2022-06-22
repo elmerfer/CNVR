@@ -31,7 +31,7 @@ if(!is.null(dir.path)){
    }
    cat(paste0("\nNow searching for CNVs on subject ",dirname(dir.path)))
     sbj <- CNVR::CNVcallFromDB(db, unlist(stringr::str_split(basename(bam.file),"_"))[1])
-    filexlsx <- CNVReport(cnv = sbj[[1]], dir.path)
+    filexlsx <- CNVR::CNVReport(cnv = sbj[[1]], dir.path)
     cat("\n-------------------\n")
     cat(paste0("\nFile created ....:", ifelse(is.null(filexlsx),"NOT CREATED", basename(filexlsx)),"\n"))
     
