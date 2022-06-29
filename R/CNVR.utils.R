@@ -443,7 +443,8 @@ CNVReport <- function(cnv,sbjPath){
   }
   cnorder <-c("chromosome","id","type","Genes","nexons","loc","size","BF","reads.ratio","reads.expected","reads.observed", "start.p","end.p","start","end","genecode")
   sheet2 <- data.frame(Info=c("Alignment code", "Selected references") , Parameters=c(paste0(unlist(aligment.code), collapse=" "), paste0(cnv.reference, collapse="-")))
-  openxlsx::write.xlsx(list(CNV=cnv@CNV.calls[,cnorder],Info=sheet2), sbjPath, overwrite = T)
+  report <- .FormatReport(cnv)
+  openxlsx::write.xlsx(list(CNV=report,Info=sheet2), sbjPath, overwrite = T)
   if(file.exists(sbjPath)){
     return(invisible(sbjPath))  
   }else{
@@ -452,3 +453,18 @@ CNVReport <- function(cnv,sbjPath){
   
 }
 
+
+.FormatReport <- function(.this){
+  cnorder <-c("chromosome","id","type","Genes","nexons","loc","size","BF","reads.ratio","reads.expected","reads.observed", "start.p","end.p","start","end","genecode")
+  df2.save <- .this@CNV.calls[,cnorder]
+  df2.save <- df2.save[order(df2.save$size,decreasing=TRUE),]
+  
+  df2.save$genecode <- unlist(lapply(df2.save$genecode, function(x){
+    exons <- unlist(stringr::str_split(x,","))
+    genes <- plyr::ldply(exons, function(ex) unlist(stringr::str_split(ex,"_")))
+    paste0(unlist(ddply(genes, .variables = "V1", 
+                        function(df) data.frame(exons=paste0(unique(df$V1),"_(",paste0(df$V2, collapse="-"),")")))$exons),collapse="|")
+  }))
+  return(df2.save)
+  
+}
