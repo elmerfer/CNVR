@@ -293,7 +293,7 @@ CNVcall <- function(db, sbjsBamFiles, reference = c("auto","all")){
 #' be identified by it colnames(db$DB).
 #' if moretha one subject is referred, then all the subjects in the DB, except the one tested, 
 #' will be used to build the reference according to the "reference" type used.
-#' if reference == auto , then the refernce will be chosen by correlation
+#' if reference == auto , then the reference will be chosen by correlation
 #' if reference == all , all the remainders subjects will be summed up to build the reference
 #' @export
 #' @examples 
@@ -425,6 +425,8 @@ CNVcallFromDB <- function(db, dbSubjects, reference = c("auto","all")){
 #' }
 CNVReport <- function(cnv,sbjPath){
   bh <- attr(cnv@CNV.calls, "BamHeader")
+  cnv.reference <- attr(cnv@reference,"DBreference")
+  
   if(is.null(bh)){
     aligment.code <- "UNKNOWN"
     subject<- ""
@@ -440,7 +442,8 @@ CNVReport <- function(cnv,sbjPath){
     sbjPath <- file.path(sbjPath,paste0(subject,"_CNVs.xlsx"))
   }
   cnorder <-c("chromosome","id","type","Genes","nexons","loc","size","BF","reads.ratio","reads.expected","reads.observed", "start.p","end.p","start","end","genecode")
-  openxlsx::write.xlsx(list(CNV=cnv@CNV.calls[,cnorder],Code=aligment.code), sbjPath, overwrite = T)
+  sheet2 <- data.frame(Info=c("Alignment code", "Selected references") , Parameters=c(paste0(unlist(aligment.code), collapse=" "), paste0(cnv.reference, collapse="-")))
+  openxlsx::write.xlsx(list(CNV=cnv@CNV.calls[,cnorder],Info=sheet2), sbjPath, overwrite = T)
   if(file.exists(sbjPath)){
     return(invisible(sbjPath))  
   }else{
