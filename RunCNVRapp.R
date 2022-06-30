@@ -2,6 +2,7 @@ library(BiocParallel)
 library(ExomeDepth)
 library(plyr)
 library(CNVR)
+library(ggpubr)
 if(Sys.info()["user"]=="biomolecular"){
    data.path <- "~/DATA/NGS/ONCO/"
 }else{
@@ -34,6 +35,21 @@ if(!is.null(dir.path)){
     filexlsx <- CNVR::CNVReport(cnv = sbj[[1]], dir.path)
     cat("\n-------------------\n")
     cat(paste0("\nFile created ....:", ifelse(is.null(filexlsx),"NOT CREATED", basename(filexlsx)),"\n"))
+    
+    geneTable <- openxlsx::read.xlsx(file.path(system.file( package = 'CNVR'),"./data/GenesTargetCNVs.xlsx"))
+    pls <- bplapply(1:22, function(xc){
+     
+      obj <- GetCNVsAnnotation(chr = xc  , x=sbj[[1]])
+      # attr(obj$CNVs,"BamHeader")
+      pp<-CNVR:::.PlotCNVchromosome(obj, geneTable = geneTable)
+    } , BPPARAM = bpparam())
+    
+    
+    
+    
+    pdf(file=file.path(dir.path,paste0(basename(dir.path),"_CNVplot.pdf")),paper="a4r",height = 14,width = 14)
+    print(ggarrange(plotlist = pls, nrow=4, ncol=6))
+    dev.off()
     
 }else{
   cat("Not patient selected")

@@ -122,14 +122,20 @@ GetAllExons <- function(cnvCalls, countThreshold =10){
     if(nrow(genes)>0){
       exons <- plyr::ldply(genes$Gene,function(x){
         ret <- subset(annot, stringr::str_detect(name, paste0("^",x,"_")))
-        ret$gene <- x
-        ret
+        if(nrow(ret)!=0){
+          ret$gene <- x
+          return(ret)  
+        }
+        
       })
-      require(dplyr)
-      require(ggrepel)
-      labels <- exons %>% group_by(gene) %>% summarise(x=min(middle),y=max(ratio))
-      p <- p + geom_point(data=exons, mapping=aes(x=middle,y=ratio, shape=gene), colour = "black") + 
-        geom_text_repel(data=as.data.frame(labels), aes(x,y=3, label=gene, size=0.6),hjust=0, vjust=0,angle=90,colour="black")
+      if(nrow(exons)>0){
+        require(dplyr)
+        require(ggrepel)
+        labels <- exons %>% group_by(gene) %>% summarise(x=min(middle),y=max(ratio))
+        p <- p + geom_point(data=exons, mapping=aes(x=middle,y=ratio, shape=gene), colour = "black") + 
+          geom_text_repel(data=as.data.frame(labels), aes(x,y=3, label=gene, size=0.6),hjust=0, vjust=0,angle=90,colour="black")  
+      }
+      
     }
     
   }

@@ -6,12 +6,24 @@
 
 #' Centromere
 #' 
-#' Information regardin to Centromere position for hg19 and GRCh38
+#' Information regarding to Centromere position for hg19 and GRCh38
 #' 
-#' Is a list with two data.frames with three columns "chr", left , right (the last two identifies the position of the base partition. left corresponde to the p. and right to q)
+#' Is a list with two data.frames with three columns "chr", left , right (the last two identifies the position of the base partition. 
+#' left correspond to the p. and right to q)
 #' @docType data
 #' @keywords datasets
 #' @name Centromere
 #' @usage data(Centromere)
 #' @format A data frame with 61 rows (neoantigens) and 10 variables (neoantigens info)
+NULL
+
+#' GeneTargetCNVs
+#' 
+#' Information about interesting genes to be pointed into the plots
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name GeneTargetCNVs
+#' @usage data(GeneTargetCNVs)
+#' @format A data frame 
 NULL

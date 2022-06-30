@@ -2,10 +2,10 @@
 geneTable <- openxlsx::read.xlsx("./data/GenesTargetCNVs.xlsx")
 geneTable$chromosome <- stringr::str_remove_all(geneTable$chromosome,"[a-z]")
 View(geneTable)
-
+library(ggplot2)
 pls <- bplapply(1:22, function(xc){
   print(xc)
-   
+
   obj <- GetCNVsAnnotation(chr = xc  , x=sbj[[1]])
   # attr(obj$CNVs,"BamHeader")
   pp<-CNVR:::.PlotCNVchromosome(obj, geneTable = geneTable)
