@@ -453,10 +453,16 @@ CNVReport <- function(cnv,sbjPath){
   
 }
 
-
-.FormatReport <- function(.this){
+#' .FormatReport
+#' Internal function to order and format the final Excel report file.
+#' @param .data an ExomeDepth CNV call object \code{\link[ExomeDepth]{CallCNVs}}
+#' @return 
+#' an ordered and formatted data.frame
+#' the genecode is formatted to diminish space and to facilitate its read.
+#' The CNVs are ordered according to the bp size width
+.FormatReport <- function(.data){
   cnorder <-c("chromosome","id","type","Genes","nexons","loc","size","BF","reads.ratio","reads.expected","reads.observed", "start.p","end.p","start","end","genecode")
-  df2.save <- .this@CNV.calls[,cnorder]
+  df2.save <- .data@CNV.calls[,cnorder]
   df2.save <- df2.save[order(df2.save$size,decreasing=TRUE),]
   
   df2.save$genecode <- unlist(lapply(df2.save$genecode, function(x){
