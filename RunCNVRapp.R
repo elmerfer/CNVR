@@ -36,6 +36,7 @@ if(!is.null(dir.path)){
     cat("\n-------------------\n")
     cat(paste0("\nFile created ....:", ifelse(is.null(filexlsx),"NOT CREATED", basename(filexlsx)),"\n"))
     
+    cat(paste0("\nNow Creating plots... \n"))
     geneTable <- openxlsx::read.xlsx(file.path(system.file( package = 'CNVR'),"./data/GenesTargetCNVs.xlsx"))
     pls <- bplapply(1:22, function(xc){
      
@@ -46,11 +47,13 @@ if(!is.null(dir.path)){
     
     
     
-    
-    pdf(file=file.path(dir.path,paste0(basename(dir.path),"_CNVplot.pdf")),paper="a4r",height = 14,width = 14)
+    pdf.file.name <- file.path(dir.path,paste0(basename(dir.path),"_CNVplot.pdf"))
+    pdf(file=pdf.file.name,paper="a4r",height = 14,width = 14)
     print(ggarrange(plotlist = pls, nrow=4, ncol=6))
     dev.off()
     
+    cat(paste0("\nNow Plos saved to :", ifelse(file.exists(pdf.file.name),paste0(basename(pdf.file.name),"\n"), "FAILED\n")))
+    
 }else{
-  cat("Not patient selected")
+  cat("\nPatient NOT selected\n")
 }

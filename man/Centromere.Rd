@@ -11,9 +11,10 @@ A data frame with 61 rows (neoantigens) and 10 variables (neoantigens info)
 data(Centromere)
 }
 \description{
-Information regardin to Centromere position for hg19 and GRCh38
+Information regarding to Centromere position for hg19 and GRCh38
 }
 \details{
-Is a list with two data.frames with three columns "chr", left , right (the last two identifies the position of the base partition. left corresponde to the p. and right to q)
+Is a list with two data.frames with three columns "chr", left , right (the last two identifies the position of the base partition. 
+left correspond to the p. and right to q)
 }
 \keyword{datasets}
