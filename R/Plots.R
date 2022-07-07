@@ -61,7 +61,13 @@ GetAllExons <- function(cnvCalls, countThreshold =10){
   
   bh <- attr(annot$CNVs,"BamHeader")
   data(Centromere)
-  Genome <- ifelse(stringr::str_detect(bh$GenomeDBversion,"GRCh38"),"GRCh38","hg19")
+  if(!is.null(bh$GenomeDBversion)){
+    Genome <- ifelse(stringr::str_detect(bh$GenomeDBversion,"GRCh38"),"GRCh38","hg19")  
+  }else{
+    Genome <- ifelse(!any(stringr::str_detect(bh$Code,"hg19")),"GRCh38","hg19")
+  }
+  
+  
   CNVs <- annot$CNVs
   CNVs$width <- (CNVs$end-CNVs$start)
   chr <- stringr::str_replace_all(annot$Exons$chromosome[1],"chr","Chr")
