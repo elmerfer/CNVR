@@ -428,8 +428,15 @@ CNVReport <- function(cnv,sbjPath){
   cnv.reference <- attr(cnv@reference,"DBreference")
   
   if(is.null(bh)){
-    aligment.code <- "UNKNOWN"
-    subject<- ""
+    ##try to solve the missinn header
+    bamf <- list.files(sbjPath, pattern = ".bam|.BAM", full.names = T)
+    bamf <- bamf[!stringr::str_detect(bamf,".bai|.BAI")]
+    bh <- .ReadBamHeader(bamf)
+    aligment.code <- stringr::str_split(bh$Code[stringr::str_detect(bh$Code,"_1.fastq|_R1.fastq|fq")]," ")
+    subject<- basename(unlist(aligment.code)[which(stringr::str_detect(unlist(aligment.code),"_1.fastq|_R1.fastq|fq"))[1]])
+    attr(cnv@CNV.calls, "BamHeader") <- bh
+    # aligment.code <- "UNKNOWN"
+    # subject<- basename(sbjPath)
     warning("header information not found")
   }else{
     aligment.code <- stringr::str_split(bh$Code[stringr::str_detect(bh$Code,"_1.fastq|_R1.fastq|fq")]," ")

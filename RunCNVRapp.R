@@ -32,6 +32,16 @@ if(!is.null(dir.path)){
    }
    cat(paste0("\nNow searching for CNVs on subject ",dirname(dir.path)))
     sbj <- CNVR::CNVcallFromDB(db, unlist(stringr::str_split(basename(bam.file),"_"))[1])
+    
+    ##check bamheader
+    bh <- attr(sbj[[1]]@CNV.calls, "BamHeader")
+    if(is.null(bh)){
+      bh <- CNVR:::.ReadBamHeader(bam.file)
+      attr(sbj[[1]]@CNV.calls, "BamHeader") <- bh  
+    }
+    
+    
+    
     filexlsx <- CNVR::CNVReport(cnv = sbj[[1]], dir.path)
     cat("\n-------------------\n")
     cat(paste0("\nFile created ....:", ifelse(is.null(filexlsx),"NOT CREATED", basename(filexlsx)),"\n"))
